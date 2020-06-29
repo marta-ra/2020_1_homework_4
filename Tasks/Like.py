@@ -18,12 +18,37 @@ likes("Alex", "Jacob", "Mark", "Max") -> "Alex, Jacob and 2 others like this"
 
 class MyClass:
 
-    def likes(self, var: str) -> str:
-        result = ''
+    def likes(self, var):
+        if var != '':
+            new_input = self.create_lst(var)
+            condition = len(self.create_lst(var))
+            result = 0
 
+            if condition == 1:
+                result = new_input[0] + ' likes this'
+            elif condition == 2:
+                result = new_input[0] + ' and ' + new_input[1] + ' like this'
+            elif condition == 3:
+                result = new_input[0] + ', ' + new_input[1] + ' and ' + new_input[2] + ' like this'
+            elif condition > 3:
+                others = str(condition - 2)
+                result = new_input[0] + ', ' + new_input[1] + ' and ' + others + ' others like this'
+
+
+        else:
+            result = "no one likes this"
         return result
 
+    def del_char(self, var):
+        symb = '",'
+        for char in symb:
+            var = var.replace(char, "")
+        return var
 
+    def create_lst(self, var):
+        a = self.del_char(var)
+        list_of_names = list(a.split(' '))
+        return list_of_names
 
 if __name__ == '__main__':
     # Here we can make console input and check how function works

@@ -1,6 +1,7 @@
 '''
 Декоратор типов
-Напишите декоратор, который проверял бы тип параметров функции следующим образом: При вызове без аргументов осуществлял бы конвертацию параметров и возвращаемого значения в указанные типы:
+Напишите декоратор, который проверял бы тип параметров функции следующим образом: При вызове без аргументов осуществлял бы
+конвертацию параметров и возвращаемого значения в указанные типы:
 
 @typed
 def add(a: int, b: int) -> str:
@@ -30,33 +31,60 @@ acc(0.1, 0.2, 0.4) -> 0.7000000000000001
 
 class MyClass:
 
-    @typed
-    def add(a: int, b: int) -> str:
-        return a + b
+    def typed(f):
+        def wrapper(self, *args, **kwargs):
+            lst = []
+            for arg in args:
+                arg = int(arg)
+                lst.append(arg)
+            result = str(f(self, *lst, **kwargs))
+            return result
 
-    @typed(strict=True)
-    def convert_upper(msg: str) -> str:
+        return wrapper
+
+    @typed
+    def add(self, a: int, b: int) -> str:
+        return a + b
+#____________________________________
+
+    def typed2(**kwargs):
+        def outer(f):
+            def wrapper(self, a):
+                # не совсем то что нужно, но как смогла
+                if type(a) != str:
+                    result = TypeError('`convert_upper` argument `msg` required to be a `str` instance')
+                else:
+                    result = f(self, a)
+                return result
+            return wrapper
+        return outer
+
+    @typed2(strict=True)
+    def convert_upper(self, msg: str) -> str:
         return msg.upper()
 
-    @typed
-    def acc(a, b, c):
-        return a + b + c
+
+    # @typed
+    # def acc(self, a, b, c):
+    #     return a + b + c
+
 
 if __name__ == '__main__':
     # Here we can make console input and check how function works
 
-    a =
-    b =
+    a = 5
+    b = True
 
     result = MyClass().add(a, b)
+
     print(result)
 
-    msg =
+    msg = ['h']
     result = MyClass().convert_upper(msg)
     print(result)
-
-    a =
-    b =
-    c =
-    result = MyClass().convert_upper(a, b, c)
-    print(result)
+    #
+    # a = '5'
+    # b = '6'
+    # c = '2'
+    # result = MyClass().acc(a, b, c)
+    # print(result)

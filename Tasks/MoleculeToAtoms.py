@@ -15,12 +15,73 @@ K4[ON(SO3)2]2 -> {K: 4, O: 14, N: 2, S: 4}
 '''
 
 
+import re
+from collections import Counter
+
 class MyClass:
+    global ATOM_REGEX
+    global OPENERS
+    global CLOSERS
+    ATOM_REGEX = '([A-Z][a-z]*)(\d*)'
+    OPENERS = '({['
+    CLOSERS = ')}]'
 
-    def parse(self, var: str) -> dict:
-        result = {}
+    def is_balanced(self, formula):
+        # проверка ввода, все ли скобки поставлены попарно
+        c = Counter(formula)
+        return c['['] == c[']'] and c['{'] == c['}'] and c['('] == c[')']
 
-        return result
+    def _dictify(self, tuples):
+        #  преобразование кортежа в словарь автомов
+        res = dict()
+        for atom, n in tuples:
+            try:
+                res[atom] += int(n or 1)
+            except KeyError:
+                res[atom] = int(n or 1)
+        return res
+
+    def _fuse(self, mol1, mol2, w=1):
+        # составляется соловарь молекул
+        return {atom: (mol1.get(atom, 0) + mol2.get(atom, 0)) * w for atom in set(mol1) | set(mol2)}
+
+    def _parse(self, formula):
+        q = []
+        mol = {}
+        i = 0
+
+        while i < len(formula):
+            token = formula[i]
+
+            if token in CLOSERS:
+                m = re.match('\d+', formula[i + 1:])
+                if m:
+                    weight = int(m.group(0))
+                    i += len(m.group(0))
+                else:
+                    weight = 1
+
+                submol = self._dictify(re.findall(ATOM_REGEX, ''.join(q)))
+                return self._fuse(mol, submol, weight), i
+
+            elif token in OPENERS:
+                submol, l = self._parse(formula[i + 1:])
+                mol = self._fuse(mol, submol)
+                # пропустить уже прочитанный submol
+                i += l + 1
+            else:
+                q.append(token)
+
+            i += 1
+
+        return self._fuse(mol, self._dictify(re.findall(ATOM_REGEX, ''.join(q)))), i
+
+    def parse(self, formula):
+        # разбор введенной формула (парсинг) и возврат словаря с количеством каждого атома
+        if not self.is_balanced(formula):
+            raise ValueError("Watch your brackets ![{]$[&?)]}!]")
+
+        return self._parse(formula)[0]
 
 
 
