@@ -59,7 +59,7 @@ class MyClass:
         }
         for var in vars.keys():
             if self.vars.get(var) != None:
-                raise Exception("Cannot redefine the value of " + var)
+                raise Exception('Cannot redefine the value of ' + var)
             self.vars[var] = vars[var]
 
     def getValue(self):
@@ -67,10 +67,8 @@ class MyClass:
         self.skipWhitespace()
         if self.hasNext():
             raise Exception(
-                "Unexpected character found: '" +
-                self.peek() +
-                "' at index " +
-                str(self.index))
+                'Unexpected character found: ' +
+                self.peek() + ' at index ' + str(self.index))
         return value
 
     def peek(self):
@@ -117,10 +115,8 @@ class MyClass:
                 self.index += 1
                 denominator = self.parseParenthesis()
                 if denominator == 0:
-                    raise Exception(
-                        "Division by 0 kills baby whales (occured at index " +
-                        str(div_index) +
-                        ")")
+                    raise Exception('Division by 0 kills baby whales (occured at index ' +
+                        str(div_index) + ')')
                 values.append(1.0 / denominator)
             else:
                 break
@@ -137,8 +133,7 @@ class MyClass:
             value = self.parseExpression()
             self.skipWhitespace()
             if self.peek() != ')':
-                raise Exception(
-                    "No closing parenthesis found at character "
+                raise Exception('No closing parenthesis found at character '
                     + str(self.index))
             self.index += 1
             return value
@@ -175,10 +170,7 @@ class MyClass:
 
         value = self.vars.get(var, None)
         if value == None:
-            raise Exception(
-                "Unrecognized variable: '" +
-                var +
-                "'")
+            raise Exception('Unrecognized variable: ' + str(var))
         return float(value)
 
     def parseNumber(self):
@@ -191,10 +183,7 @@ class MyClass:
             char = self.peek()
             if char == '.':
                 if decimal_found:
-                    raise Exception(
-                        "Found an extra period in a number at character " +
-                        str(self.index) +
-                        ". Are you European?")
+                    raise Exception('Found an extra period in a number at character ' + str(self.index) +'. Are you European?')
                 decimal_found = True
                 strValue += '.'
             elif char in '0123456789':
@@ -205,14 +194,10 @@ class MyClass:
 
         if len(strValue) == 0:
             if char == '':
-                raise Exception("Unexpected end found")
+                raise Exception('Unexpected end found')
             else:
-                raise Exception(
-                    "I was expecting to find a number at character " +
-                    str(self.index) +
-                    " but instead I found a '" +
-                    char +
-                    "'. What's up with that?")
+                raise Exception('I was expecting to find a number at character ' +
+                    str(self.index) + ' but instead I found a ' + char + '. Whats up with that?')
 
         return float(strValue)
 
@@ -221,9 +206,11 @@ def evaluate(expression, vars={}):
     try:
         p = MyClass(expression, vars)
         value = p.getValue()
-    except Exception as ex:
-        msg = ex.message
-        raise Exception(msg)
+    # except Exception as ex:
+    #     msg = ex.message
+    #     raise Exception(msg)
+    except AttributeError:
+        raise ('I can not recognize the entered expression')
 
     # Возвращает целочисленный тип, если ответ является целым числом
     if int(value) == value:
@@ -242,8 +229,10 @@ def evaluate(expression, vars={}):
 if __name__ == '__main__':
     # Here we can make console input and check how function works
 
-    var = input('Input Expression: ')
+    var = input()
 
     result = evaluate(var)
 
     print(result)
+
+

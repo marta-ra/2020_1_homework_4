@@ -26,6 +26,16 @@ class MyClass:
     OPENERS = '({['
     CLOSERS = ')}]'
 
+    def typed(f):
+        def wrapper(self, *args):
+            result = f(self, *args)
+            if result == {}:
+                result = 'Enter the formula of the molecule'
+            else:
+                result = f(self, *args)
+            return result
+        return wrapper
+
     def is_balanced(self, formula):
         # проверка ввода, все ли скобки поставлены попарно
         c = Counter(formula)
@@ -75,7 +85,7 @@ class MyClass:
             i += 1
 
         return self._fuse(mol, self._dictify(re.findall(ATOM_REGEX, ''.join(q)))), i
-
+    @typed
     def parse(self, formula):
         # разбор введенной формула (парсинг) и возврат словаря с количеством каждого атома
         if not self.is_balanced(formula):

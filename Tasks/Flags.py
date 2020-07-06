@@ -29,22 +29,33 @@ class MyClass:
 
     def _decor(func):
         def wrapper(self, *args, **kwargs ):
-            level1 = '+___ ' * int(*args)
-            level3 = '|__\ ' * int(*args)
-            level4 = '|    ' * int(*args)
-            print(level1)
-            print(func(self, *args, **kwargs))
-            print(level3)
-            print(level4)
+            for i in args:
+                if int(i) > 0 and int(i) < 10:
+                    level1 = str('+___ ' * int(*args))
+                    level3 = str('|__\ ' * int(*args))
+                    level4 = str('|    ' * int(*args))
+                    print(level1)
+                    print(func(self, *args, **kwargs))
+                    print(level3)
+                    print(level4)
+                    seccess = func(self, *args, **kwargs)
+                    return seccess
+                else:
+                    print('Enter value greater than 0 and less than 10')
+                    error = 'Enter value greater than 0 and less than 10'
+                    return error
         return wrapper
+
 
 
     @_decor
     def flags(self, expression):
+
         level2 = ''
         for i in self.lst(expression):
             num = str(self.lst(expression)[i-1])
             level2 += '|' + num + ' / '
+
         return level2
 
     def lst(self, expression):
@@ -61,6 +72,5 @@ if __name__ == '__main__':
     var = input('Input Number of Flags: ')
 
     result = MyClass().flags(var)
-
 
 

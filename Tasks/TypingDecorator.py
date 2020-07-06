@@ -31,60 +31,73 @@ acc(0.1, 0.2, 0.4) -> 0.7000000000000001
 
 class MyClass:
 
-    def typed(f):
-        def wrapper(self, *args, **kwargs):
+    def typed1(f):
+        def wrapper(self, *args):
             lst = []
             for arg in args:
                 arg = int(arg)
                 lst.append(arg)
-            result = str(f(self, *lst, **kwargs))
+            result = str(f(self, *lst))
             return result
-
         return wrapper
 
-    @typed
-    def add(self, a: int, b: int) -> str:
-        return a + b
-#____________________________________
 
-    def typed2(**kwargs):
-        def outer(f):
-            def wrapper(self, a):
-                # не совсем то что нужно, но как смогла
-                if type(a) != str:
-                    result = TypeError('`convert_upper` argument `msg` required to be a `str` instance')
-                else:
-                    result = f(self, a)
+    def typed2(strict=False):
+        def outer(f, *args):
+            def wrapper(self, *args):
+                if strict==True:
+                    if type(*args) == str:
+                        result = f(self, *args)
+                    else:
+                        raise TypeError('`convert_upper` argument `msg` required to be a `str` instance')
                 return result
             return wrapper
         return outer
+
+    def typed3(f):
+        def wrapper(self, *args):
+            result = f(self, *args)
+            return result
+        return wrapper
+
+
+    @typed1
+    def add(self, a: int, b: int) -> str:
+        return a + b
+
 
     @typed2(strict=True)
     def convert_upper(self, msg: str) -> str:
         return msg.upper()
 
 
-    # @typed
-    # def acc(self, a, b, c):
-    #     return a + b + c
+    @typed3
+    def acc(self, a, b, c):
+        return a + b + c
 
 
 if __name__ == '__main__':
     # Here we can make console input and check how function works
 
-    a = 5
+    a = 4
     b = True
 
     result = MyClass().add(a, b)
 
     print(result)
 
-    msg = ['h']
+    msg = '6'
     result = MyClass().convert_upper(msg)
     print(result)
     #
-    # a = '5'
-    # b = '6'
-    # c = '2'
-    # result = MyClass().acc(a, b, c)
-    # print(result)
+    a = 'a'
+    b = 'b'
+    c = 'c'
+    # a = 5
+    # b = 5
+    # c = 1
+    # a = 0.1
+    # b = 0.2
+    # c = 0.4
+    result = MyClass().acc(a, b, c)
+    print(result)
