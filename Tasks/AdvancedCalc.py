@@ -206,9 +206,6 @@ def evaluate(expression, vars={}):
     try:
         p = MyClass(expression, vars)
         value = p.getValue()
-    # except Exception as ex:
-    #     msg = ex.message
-    #     raise Exception(msg)
     except AttributeError:
         raise ('I can not recognize the entered expression')
 

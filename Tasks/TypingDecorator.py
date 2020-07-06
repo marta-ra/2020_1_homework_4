@@ -65,11 +65,9 @@ class MyClass:
     def add(self, a: int, b: int) -> str:
         return a + b
 
-
     @typed2(strict=True)
     def convert_upper(self, msg: str) -> str:
         return msg.upper()
-
 
     @typed3
     def acc(self, a, b, c):

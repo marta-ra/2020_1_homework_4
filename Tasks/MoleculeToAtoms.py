@@ -15,8 +15,6 @@ K4[ON(SO3)2]2 -> {K: 4, O: 14, N: 2, S: 4}
 '''
 
 
-import re
-from collections import Counter
 
 class MyClass:
     global ATOM_REGEX

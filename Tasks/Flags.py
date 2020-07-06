@@ -47,7 +47,6 @@ class MyClass:
         return wrapper
 
 
-
     @_decor
     def flags(self, expression):
 
